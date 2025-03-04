@@ -33,9 +33,8 @@ https://mumbai.polygonscan.com/address/0x0E1Ee61D5C435C1320E3fb766328F35263E41Bf
 - Marketplace owner can set platform fee
 - Buyer can purchase token and list it again for sale
 
-<img src="https://firebasestorage.googleapis.com/v0/b/virtualground-meta.appspot.com/o/nft%2Fscreenshot.png?alt=media&token=b788b18e-cd33-43f4-9fb8-ee3dc6555bb6" width="45%"></img>
-<img src="https://firebasestorage.googleapis.com/v0/b/virtualground-meta.appspot.com/o/nft%2FScreenshot%202022-08-26%20at%2021.53.06.png?alt=media&token=06aafd86-7b27-46c3-a234-c59a3124a14f" width="45%"></img>
-<img src="https://firebasestorage.googleapis.com/v0/b/virtualground-meta.appspot.com/o/nft%2FScreenshot%202022-07-03%20at%2012.24.19.png?alt=media&token=7528e3b4-72df-4660-b576-2c072e7cce1c" width="45%"></img>
+<img src = "./images/Prev1.png">
+<img src = "./images/Prev2.png">
 
 <p align="right">(<a href="#top">back to top</a>)</p>
 
