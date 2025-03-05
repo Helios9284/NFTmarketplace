@@ -51,9 +51,6 @@ const AllNfts = () => {
         return item;
       }),
     );
-    {
-      console.log('items: ', items);
-    }
     setNfts(items);
     setLoaded(true);
   }
