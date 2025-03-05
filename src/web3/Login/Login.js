@@ -9,19 +9,19 @@ import { providers } from 'ethers';
 import WalletLink from '@coinbase/wallet-sdk';
 import Web3Modal from 'web3modal';
 
-const INFURA_ID = 'a1f754ea74b24beea097773f476894e0';
+// const INFURA_ID = 'a1f754ea74b24beea097773f476894e0';
+const INFURA_ID = process.env.INFURA_API_KEY;
 
 const providerOptions = {
   walletconnect: {
     package: WalletConnectProvider, // required
     options: {
-      infuraId: INFURA_ID // required
-    }
+      infuraId: INFURA_ID, // required
+    },
   },
   'custom-walletlink': {
     display: {
-      logo:
-        'https://play-lh.googleusercontent.com/PjoJoG27miSglVBXoXrxBSLveV6e3EeBPpNY55aiUUBM9Q1RCETKCOqdOkX2ZydqVf0',
+       logo: 'https://play-lh.googleusercontent.com/PjoJoG27miSglVBXoXrxBSLveV6e3EeBPpNY55aiUUBM9Q1RCETKCOqdOkX2ZydqVf0',
       name: 'Coinbase',
       description: 'Connect to Coinbase Wallet (not Coinbase App)'
     },
@@ -188,12 +188,8 @@ export const Login = () => {
          handleLogout={disconnect}
        />
       ) : (
-        <IconButton
-          color='primary'
-          onClick={connect}
-          size='medium'
-        >
-          <AccountBalanceWalletIcon fontSize='large' />
+        <IconButton color="primary" onClick={connect} size="medium">
+          <AccountBalanceWalletIcon fontSize="large" />
         </IconButton>
       )}
     </div>
