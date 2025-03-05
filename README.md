@@ -17,11 +17,10 @@
 Contract is deployed on Polygon mumbai network
 
 ```sh
-Address: 0x0E1Ee61D5C435C1320E3fb766328F35263E41Bff
+Marketplace Address: 0xFC825b8f07E465c32b199Ecf5b0f3B679A4285b0
 RPC URL: https://rpc-mumbai.maticvigil.com
 ```
 
-https://mumbai.polygonscan.com/address/0x0E1Ee61D5C435C1320E3fb766328F35263E41Bff
 
 
 
@@ -49,7 +48,7 @@ https://mumbai.polygonscan.com/address/0x0E1Ee61D5C435C1320E3fb766328F35263E41Bf
 
 ### Installation
 
-\_Below are instructions to get started
+Below are instructions to get started
 
 1. Clone the repo
    ```sh
