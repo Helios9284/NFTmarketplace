@@ -1,25 +1,26 @@
-import React, { useState } from 'react';
-import { useRouter } from 'next/router';
+import React, { useState, useRef } from 'react';
 import { useFormik } from 'formik';
 import * as yup from 'yup';
-import Box from '@mui/material/Box';
-import Grid from '@mui/material/Grid';
-import TextField from '@mui/material/TextField';
+import {
+  Box,
+  Grid,
+  TextField,
+  Typography,
+  IconButton,
+  Collapse,
+  Alert,
+} from '@mui/material';
 import LoadingButton from '@mui/lab/LoadingButton';
-import Typography from '@mui/material/Typography';
-import IconButton from '@mui/material/IconButton';
 import AttachFileIcon from '@mui/icons-material/AttachFile';
 import SendIcon from '@mui/icons-material/Send';
-import Collapse from '@mui/material/Collapse';
 import CloseIcon from '@mui/icons-material/Close';
-import Alert from '@mui/material/Alert';
+import DialogBox from 'components/DialogBox';
 
 import web3 from 'web3';
 import Web3Modal from 'web3modal';
 import { ethers } from 'ethers';
 import { create } from 'ipfs-http-client';
-import { marketAddress } from '/Address';
-import Marketplace from '/artifacts/contracts/Marketplace.sol/Marketplace.json';
+import Marketplace from 'contracts/Marketplace.sol/Marketplace.json';
 
 const validationSchema = yup.object({
   name: yup
@@ -56,17 +57,22 @@ const Form = () => {
     },
     validationSchema: validationSchema,
     onSubmit: (values) => {
-      console.log(values);
       setLoading(true);
       createMarket();
     },
   });
 
+  const [open, setOpen] = useState(false);
   const [alertOpen, setAlertOpen] = useState(false);
   const [loading, setLoading] = React.useState(false);
   const [fileUrl, setFileUrl] = useState('');
+  const [dialogBoxOpen, setDialogBoxOpen] = useState(false);
+  const [hash, setHash] = useState('');
+  const fileInputRef = useRef(null);
+
   const projectId = process.env.INFURA_IPFS_ID;
   const projectSecret = process.env.INFURA_IPFS_SECRET;
+  const infuraDomain = process.env.INFURA_IPFS_DOMAIN;
 
   const auth =
     'Basic ' + Buffer.from(projectId + ':' + projectSecret).toString('base64');
@@ -92,7 +98,7 @@ const Form = () => {
 
       const price = web3.utils.toWei(formik.values.price, 'ether');
       let contract = new ethers.Contract(
-        marketAddress,
+        process.env.MARKETPLACE_ADDRESS,
         Marketplace.abi,
         signer,
       );
@@ -104,13 +110,18 @@ const Form = () => {
 
       try {
         await transaction.wait();
-        //console.log('10.1 transaction.wait------success')
+        setHash(transaction.hash);
+        setDialogBoxOpen(true);
       } catch (error) {
-        //console.log('10.2 transaction.wait------error', error)
         alert('Error in creating NFT! Please try again.');
         setLoading(false);
       }
-      alert('NFT created successfully');
+      if (fileInputRef.current) {
+        fileInputRef.current.value = ''; // clear the file input
+      }
+      setAlertOpen(false);
+      formik.resetForm();
+      console.log(fileUrl);
       setLoading(false);
     }
 
@@ -123,12 +134,14 @@ const Form = () => {
       const added = await client.add(file, {
         progress: (prog) => console.log(`received: ${prog}`),
       });
-      const url = `https://ac12644.infura-ipfs.io/ipfs/${added.path}`;
+      const url = `${infuraDomain}/ipfs/${added.path}`; //DEDICATED SUBDOMAIN FROM INFURA
       setFileUrl(url);
-      console.log('----------------', fileUrl);
+      console.log(url);
+      setOpen(true);
     } catch (error) {
       console.log('Error uploading file: ', error);
       setLoading(false);
+      setOpen(false);
     }
   }
 
@@ -144,7 +157,7 @@ const Form = () => {
     });
     try {
       const added = await client.add(data);
-      const url = `https://ipfs.infura.io/ipfs/${added.path}`;
+      const url = `${infuraDomain}/ipfs/${added.path}`;
       createSale(url);
     } catch (error) {
       console.log('Error uploading file: ', error);
@@ -164,27 +177,32 @@ const Form = () => {
               <AttachFileIcon fontSize="medium" />
               Upload file *
             </Typography>
-            <input type="file" name={'file'} onChange={onChange} />
-            {fileUrl && (
+            <input
+              type="file"
+              name={'file'}
+              onChange={onChange}
+              ref={fileInputRef}
+            />
+            <Collapse in={open}>
               <Alert
                 severity="success"
+                sx={{ mt: 1 }}
                 action={
                   <IconButton
                     aria-label="close"
                     color="inherit"
                     size="small"
                     onClick={() => {
-                      setAlertOpen(false);
+                      setOpen(false);
                     }}
                   >
                     <CloseIcon fontSize="inherit" />
                   </IconButton>
                 }
-                sx={{ mt: 1 }}
               >
                 File uploaded successfully!
               </Alert>
-            )}
+            </Collapse>
             <Box sx={{ width: '100%' }}>
               <Collapse in={alertOpen}>
                 <Alert
@@ -313,6 +331,14 @@ const Form = () => {
           </Grid>
         </Grid>
       </form>
+      <DialogBox
+        open={dialogBoxOpen}
+        onClose={() => setDialogBoxOpen(false)}
+        title={'Yeee!'}
+        message={`NFT created successfully with hash: ${hash}`}
+        buttonText="View on polygonscan"
+        buttonLink={`https://mumbai.polygonscan.com/tx/${hash}`}
+      />
     </Box>
   );
 };
